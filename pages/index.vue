@@ -2,13 +2,16 @@
   <main>
     <section>
       <h3>Finished books and when they were finished (date of last update)</h3>
-      <div v-for="book in section1Books" :key="book.id">
+      <div v-for="book in section1Books" :key="`finished-${book.id}`">
         {{ book.title }} - {{ book.end_date }}
       </div>
     </section>
 
     <section>
       <h3>Un-finished books and how much is left of them (or % progress)</h3>
+      <div v-for="book in section2Books" :key="`unfinished-${book.id}`">
+        {{ book.title }} - {{ book.progress | percent }}
+      </div>
     </section>
 
     <section>
@@ -39,9 +42,13 @@ export default {
   methods: {
     ...mapActions({
       getLatestFinishedBooks: 'books/getLatestFinishedBooks',
+      getUnfinishedBooks: 'books/getUnfinishedBooks',
     }),
     async getBooks() {
-      this.section1Books = await this.getLatestFinishedBooks()
+      ;[this.section1Books, this.section2Books] = await Promise.all([
+        this.getLatestFinishedBooks(),
+        this.getUnfinishedBooks(),
+      ])
     },
   },
   mounted() {

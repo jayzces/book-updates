@@ -15,7 +15,7 @@ export const actions = {
         book: b.id,
         _sort: 'date',
         _order: 'desc',
-      }).then(response => ({ ...b, end_date: response[0].date })))
+      }).then(updates => ({ ...b, end_date: updates[0].date })))
     )
   },
   async getUnfinishedBooks(_, limit = 6) {
@@ -25,6 +25,17 @@ export const actions = {
       _limit: limit
     })
 
-    console.log({ books })
+    return await Promise.all(
+      books.map(b => this.$api.getReadingUpdates({
+        book: b.id,
+      }).then(updates => {
+        const compiledProgress = updates.map(u => u.progress)
+          .reduce((a, b) => a + b, 0)
+        return {
+          ...b,
+          progress: (b.start_location + compiledProgress) / b.end_location
+        }
+      }))
+    )
   }
 }
