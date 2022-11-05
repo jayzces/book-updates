@@ -23,6 +23,10 @@
 
     <section>
       <h3>Combined progress per day in the last 10 days</h3>
+      <div v-for="(p, pI) in section4Progress" :key="`progress-${pI}`">
+        {{ p.date }} - {{ p.progress }} page{{ p.progress === 1 ? '' : 's' }}
+        read
+      </div>
     </section>
 
     <section>
@@ -41,25 +45,34 @@ export default {
       section1Books: [],
       section2Books: [],
       section3Books: [],
+      section4Progress: [],
+      section5books: [],
     }
   },
   methods: {
     ...mapActions({
       getLatestFinishedBooks: 'books/getLatestFinishedBooks',
+      getProgressPerDay: 'books/getProgressPerDay',
       getRecentBooks: 'books/getRecentBooks',
       getUnfinishedBooks: 'books/getUnfinishedBooks',
     }),
-    async getBooks() {
-      ;[this.section1Books, this.section2Books, this.section3Books] =
-        await Promise.all([
-          this.getLatestFinishedBooks(),
-          this.getUnfinishedBooks(),
-          this.getRecentBooks(),
-        ])
+    async getData() {
+      ;[
+        this.section1Books,
+        this.section2Books,
+        this.section3Books,
+        this.section4Progress,
+        this.section5books,
+      ] = await Promise.all([
+        this.getLatestFinishedBooks(),
+        this.getUnfinishedBooks(),
+        this.getRecentBooks(),
+        this.getProgressPerDay(),
+      ])
     },
   },
   mounted() {
-    this.getBooks()
+    this.getData()
   },
 }
 </script>

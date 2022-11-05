@@ -18,23 +18,20 @@ export const actions = {
       }).then(updates => ({ ...b, end_date: updates[0].date })))
     )
   },
-  async getRecentBooks(_, daysDelta = 10, limit = 6) {
-    const date = new Date()
-    date.setDate(date.getDate() - daysDelta)
-    const dateString = date.toISOString().split('T')[0]
-
-    const updates = await this.$api.getReadingUpdates({
-      date_gte: dateString,
-      _sort: 'date',
-      _order: 'desc'
+  async getProgressPerDay({ dispatch }, daysDelta = 10) {
+    const updates = await dispatch('getUpdatesSinceDaysAgo', daysDelta)
+    const tracker = {}
+    updates.forEach(u => {
+      tracker[u.date] = (tracker[u.date] || 0) + u.progress
     })
 
+    const trackerKeys = Object.keys(tracker)
+    return trackerKeys.map(key => ({ date: key, progress: tracker[key] }))
+  },
+  async getRecentBooks({ dispatch }, daysDelta = 10, limit = 6) {
+    const updates = await dispatch('getUpdatesSinceDaysAgo', daysDelta)
     const uniqueBooks = []
     updates.forEach(u => {
-      /**
-       * since list is arranged in descending order, no need to replace entries
-       * in array
-       */
       if (!uniqueBooks.includes(u.book)) uniqueBooks.push(u.book)
     })
 
@@ -64,4 +61,14 @@ export const actions = {
       }))
     )
   },
+  async getUpdatesSinceDaysAgo(_, daysDelta = 10) {
+    const date = new Date()
+    date.setDate(date.getDate() - daysDelta)
+    const dateString = date.toISOString().split('T')[0]
+    return await this.$api.getReadingUpdates({
+      date_gte: dateString,
+      _sort: 'date',
+      _order: 'desc'
+    })
+  }
 }
