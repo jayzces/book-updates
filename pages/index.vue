@@ -16,6 +16,9 @@
 
     <section>
       <h3>Books with activity in the last 10 days</h3>
+      <div v-for="book in section3Books" :key="`recent-${book.id}`">
+        {{ book.title }}
+      </div>
     </section>
 
     <section>
@@ -37,18 +40,22 @@ export default {
     return {
       section1Books: [],
       section2Books: [],
+      section3Books: [],
     }
   },
   methods: {
     ...mapActions({
       getLatestFinishedBooks: 'books/getLatestFinishedBooks',
+      getRecentBooks: 'books/getRecentBooks',
       getUnfinishedBooks: 'books/getUnfinishedBooks',
     }),
     async getBooks() {
-      ;[this.section1Books, this.section2Books] = await Promise.all([
-        this.getLatestFinishedBooks(),
-        this.getUnfinishedBooks(),
-      ])
+      ;[this.section1Books, this.section2Books, this.section3Books] =
+        await Promise.all([
+          this.getLatestFinishedBooks(),
+          this.getUnfinishedBooks(),
+          this.getRecentBooks(),
+        ])
     },
   },
   mounted() {

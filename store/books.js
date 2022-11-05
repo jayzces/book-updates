@@ -18,6 +18,32 @@ export const actions = {
       }).then(updates => ({ ...b, end_date: updates[0].date })))
     )
   },
+  async getRecentBooks(_, daysDelta = 10, limit = 6) {
+    const date = new Date()
+    date.setDate(date.getDate() - daysDelta)
+    const dateString = date.toISOString().split('T')[0]
+
+    const updates = await this.$api.getReadingUpdates({
+      date_gte: dateString,
+      _sort: 'date',
+      _order: 'desc'
+    })
+
+    const uniqueBooks = []
+    updates.forEach(u => {
+      /**
+       * since list is arranged in descending order, no need to replace entries
+       * in array
+       */
+      if (!uniqueBooks.includes(u.book)) uniqueBooks.push(u.book)
+    })
+
+    // get only first 6 books
+    const books = uniqueBooks.slice(0, limit)
+
+    // get book details and compile into array
+    return await Promise.all(books.map(b => this.$api.getBook(b)))
+  },
   async getUnfinishedBooks(_, limit = 6) {
     const books = await this.$api.getBooks({
       finished: false,
@@ -37,5 +63,5 @@ export const actions = {
         }
       }))
     )
-  }
+  },
 }
