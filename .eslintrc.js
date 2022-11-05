@@ -26,5 +26,6 @@ module.exports = {
     'tailwindcss/no-contradicting-classname': 'error',
     'vue/no-v-html': 'off',
     'no-unused-vars': 'warn',
+    'no-extra-boolean-cast': 'off'
   },
 }

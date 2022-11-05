@@ -1,0 +1,11 @@
+input {
+  @apply border border-black
+}
+
+button {
+  @apply px-10 border border-black leading-6
+}
+
+h3 {
+  @apply text-lg font-bold
+}
