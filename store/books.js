@@ -64,10 +64,10 @@ export const actions = {
     const trackerKeys = Object.keys(tracker)
     return trackerKeys.map(key => ({ date: key, progress: tracker[key] }))
   },
-  getRecentBooks({ state }, daysDelta = 10, limit = 6) {
-    const date = getNewFlatDate(daysDelta)
+  getRecentBooks({ state }, { daysDelta, limit }) {
+    const date = getNewFlatDate(daysDelta || 10)
     const books = state.books.filter(b => new Date(b.last_update) >= date)
-    return books.slice(0, limit)
+    return books.slice(0, limit || 6)
   },
   getSortedBookList({ state }, limit = 6) {
     return state.books.slice(0, limit)
