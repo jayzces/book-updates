@@ -3,7 +3,7 @@
     <section>
       <h3>Finished books and when they were finished (date of last update)</h3>
       <div v-for="book in section1Books" :key="`finished-${book.id}`">
-        {{ book.title }} - {{ book.end_date }}
+        {{ book.title }} - {{ book.last_update }}
       </div>
     </section>
 
@@ -55,7 +55,7 @@ export default {
   methods: {
     ...mapActions({
       buildBookList: 'books/buildBookList',
-      getLatestFinishedBooks: 'books/getLatestFinishedBooks',
+      getFinishedBooks: 'books/getFinishedBooks',
       getProgressPerDay: 'books/getProgressPerDay',
       getRecentBooks: 'books/getRecentBooks',
       getSortedBookList: 'books/getSortedBookList',
@@ -69,7 +69,7 @@ export default {
         this.section4Progress,
         this.section5books,
       ] = await Promise.all([
-        this.getLatestFinishedBooks(),
+        this.getFinishedBooks(),
         this.getUnfinishedBooks(),
         this.getRecentBooks(),
         this.getProgressPerDay(),

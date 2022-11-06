@@ -27,31 +27,29 @@ export const actions = {
       return {
         ...book,
         reading_updates: updates,
-        // since updates are ordered desc, first one is the most recent
-        end_date: updates[0].date || null
+        /**
+         * Add last_update for sorting usage, last_update can be interpreted as
+         * end_date if book is finished. Since updates are ordered desc, first
+         * one is the most recent
+         */
+        last_update: updates[0].date || null
       }
     })
+
+    // sort books by most recent
+    appendedUpdates
+      .sort((b1, b2) => new Date(b2.last_update) - new Date(b1.last_update))
 
     commit('saveBooks', appendedUpdates)
     commit('saveUpdates', readingUpdates)
   },
-  async getLatestFinishedBooks(_, limit = 6) {
-    const books = await this.$api.getBooks({
-      finished: true,
-      _page: 1,
-      _limit: limit
-    })
-
-    return await Promise.all(
-      books.map(b => this.$api.getReadingUpdates({
-        book: b.id,
-        _sort: 'date',
-        _order: 'desc',
-      }).then(updates => ({ ...b, end_date: updates[0].date })))
-    )
+  getFinishedBooks({ state }, limit = 6) {
+    const books = state.books.filter(b => b.finished)
+    return books.slice(0, limit)
   },
-  async getProgressPerDay({ dispatch }, daysDelta = 10) {
-    const updates = await dispatch('getUpdatesSinceDaysAgo', daysDelta)
+  getProgressPerDay({ state }, daysDelta = 10) {
+    const date = getNewFlatDate(daysDelta)
+    const updates = state.updates.filter(u => new Date(u.date) >= date)
     const tracker = {}
 
     for (const u of updates) {
@@ -61,52 +59,30 @@ export const actions = {
     const trackerKeys = Object.keys(tracker)
     return trackerKeys.map(key => ({ date: key, progress: tracker[key] }))
   },
-  async getRecentBooks({ dispatch }, daysDelta = 10, limit = 6) {
-    const updates = await dispatch('getUpdatesSinceDaysAgo', daysDelta)
-    const uniqueBooks = []
-
-    for (const u of updates) {
-      // get only first 6 books
-      if (uniqueBooks.length > limit) break
-      if (!uniqueBooks.includes(u.book)) uniqueBooks.push(u.book)
-    }
-
-    // get book details and compile into array
-    return await Promise.all(uniqueBooks.map(b => this.$api.getBook(b)))
-  },
-  getSortedBookList({ state }, limit = 6) {
-    const books = [...state.books]
-    books.sort((b1, b2) => new Date(b2.end_date) - new Date(b1.end_date))
+  getRecentBooks({ state }, daysDelta = 10, limit = 6) {
+    const date = getNewFlatDate(daysDelta)
+    const books = state.books.filter(b => new Date(b.last_update) >= date)
     return books.slice(0, limit)
   },
-  async getUnfinishedBooks(_, limit = 6) {
-    const books = await this.$api.getBooks({
-      finished: false,
-      _page: 1,
-      _limit: limit
-    })
-
-    return await Promise.all(
-      books.map(b => this.$api.getReadingUpdates({
-        book: b.id,
-      }).then(updates => {
-        const compiledProgress = updates.map(u => u.progress)
-          .reduce((a, b) => a + b, 0)
-        return {
-          ...b,
-          progress: (b.start_location + compiledProgress) / b.end_location
-        }
-      }))
-    )
+  getSortedBookList({ state }, limit = 6) {
+    return state.books.slice(0, limit)
   },
-  async getUpdatesSinceDaysAgo(_, daysDelta = 10) {
-    const date = new Date()
-    date.setDate(date.getDate() - daysDelta)
-    const dateString = date.toISOString().split('T')[0]
-    return await this.$api.getReadingUpdates({
-      date_gte: dateString,
-      _sort: 'date',
-      _order: 'desc'
-    })
-  }
+  getUnfinishedBooks({ state }, limit = 6) {
+    const books = state.books.filter(b => !b.finished)
+    return books.map(b => {
+      const compiledProgress = b.reading_updates.map(u => u.progress)
+        .reduce((a, b) => a + b, 0)
+      return {
+        ...b,
+        progress: (b.start_location + compiledProgress) / b.end_location
+      }
+    }).slice(0, limit)
+  },
+}
+
+const getNewFlatDate = daysDelta => {
+  const date = new Date()
+  date.setDate(date.getDate() - daysDelta)
+  const isoDate = date.toISOString().split('T')[0]
+  return new Date(isoDate)
 }
