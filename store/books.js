@@ -1,8 +1,40 @@
 export const state = () => {
-  return {}
+  return {
+    books: [],
+    updates: []
+  }
+}
+
+export const mutations = {
+  saveBooks(state, list) {
+    state.books = list
+  },
+  saveUpdates(state, list) {
+    state.updates = list
+  }
 }
 
 export const actions = {
+  async buildBookList({ commit }) {
+    const books = await this.$api.getBooks()
+    const readingUpdates = await this.$api.getReadingUpdates({
+      _sort: 'date',
+      _order: 'desc'
+    })
+
+    const appendedUpdates = books.map(book => {
+      const updates = readingUpdates.filter(u => u.book === book.id)
+      return {
+        ...book,
+        reading_updates: updates,
+        // since updates are ordered desc, first one is the most recent
+        end_date: updates[0].date || null
+      }
+    })
+
+    commit('saveBooks', appendedUpdates)
+    commit('saveUpdates', readingUpdates)
+  },
   async getLatestFinishedBooks(_, limit = 6) {
     const books = await this.$api.getBooks({
       finished: true,
@@ -21,9 +53,10 @@ export const actions = {
   async getProgressPerDay({ dispatch }, daysDelta = 10) {
     const updates = await dispatch('getUpdatesSinceDaysAgo', daysDelta)
     const tracker = {}
-    updates.forEach(u => {
+
+    for (const u of updates) {
       tracker[u.date] = (tracker[u.date] || 0) + u.progress
-    })
+    }
 
     const trackerKeys = Object.keys(tracker)
     return trackerKeys.map(key => ({ date: key, progress: tracker[key] }))
@@ -31,15 +64,20 @@ export const actions = {
   async getRecentBooks({ dispatch }, daysDelta = 10, limit = 6) {
     const updates = await dispatch('getUpdatesSinceDaysAgo', daysDelta)
     const uniqueBooks = []
-    updates.forEach(u => {
-      if (!uniqueBooks.includes(u.book)) uniqueBooks.push(u.book)
-    })
 
-    // get only first 6 books
-    const books = uniqueBooks.slice(0, limit)
+    for (const u of updates) {
+      // get only first 6 books
+      if (uniqueBooks.length > limit) break
+      if (!uniqueBooks.includes(u.book)) uniqueBooks.push(u.book)
+    }
 
     // get book details and compile into array
-    return await Promise.all(books.map(b => this.$api.getBook(b)))
+    return await Promise.all(uniqueBooks.map(b => this.$api.getBook(b)))
+  },
+  getSortedBookList({ state }, limit = 6) {
+    const books = [...state.books]
+    books.sort((b1, b2) => new Date(b2.end_date) - new Date(b1.end_date))
+    return books.slice(0, limit)
   },
   async getUnfinishedBooks(_, limit = 6) {
     const books = await this.$api.getBooks({

@@ -31,6 +31,9 @@
 
     <section>
       <h3>Book list sorted by latest activity</h3>
+      <div v-for="book in section5books" :key="`latest-${book.id}`">
+        {{ book.title }}
+      </div>
     </section>
   </main>
 </template>
@@ -51,9 +54,11 @@ export default {
   },
   methods: {
     ...mapActions({
+      buildBookList: 'books/buildBookList',
       getLatestFinishedBooks: 'books/getLatestFinishedBooks',
       getProgressPerDay: 'books/getProgressPerDay',
       getRecentBooks: 'books/getRecentBooks',
+      getSortedBookList: 'books/getSortedBookList',
       getUnfinishedBooks: 'books/getUnfinishedBooks',
     }),
     async getData() {
@@ -68,10 +73,12 @@ export default {
         this.getUnfinishedBooks(),
         this.getRecentBooks(),
         this.getProgressPerDay(),
+        this.getSortedBookList(),
       ])
     },
   },
-  mounted() {
+  async mounted() {
+    await this.buildBookList()
     this.getData()
   },
 }
