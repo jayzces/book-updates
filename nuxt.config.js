@@ -46,10 +46,10 @@ export default {
   build: {},
 
   server: {
-    port: 3001
+    port: 3000
   },
 
   env: {
-    apiBase: 'http://localhost:3000'
+    apiBase: 'http://localhost:3001'
   }
 }
