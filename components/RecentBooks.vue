@@ -29,7 +29,7 @@ export default {
     }
   },
   async mounted() {
-    this.books = await this.getRecentBooks()
+    this.books = await this.getRecentBooks({})
   },
   methods: {
     ...mapActions({
