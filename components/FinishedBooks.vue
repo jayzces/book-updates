@@ -1,8 +1,24 @@
 <template>
   <section>
     <h3>Finished books and when they were finished (date of last update)</h3>
-    <div v-for="book in books" :key="`finished-${book.id}`">
-      {{ book.title }} - {{ book.last_update }}
+
+    <div class="grid grid-cols-6 gap-15">
+      <div
+        v-for="book in books"
+        :key="`finished-${book.id}`"
+        class="relative bg-gray-200 rounded-lg overflow-hidden"
+      >
+        <div class="aspect-w-2 aspect-h-3 pointer-events-none">
+          <!-- aspect ratio -->
+        </div>
+        <div class="absolute inset-0 h-max px-15 py-10 font-bold">
+          {{ book.title }}
+        </div>
+
+        <div class="absolute bottom-0 inset-x-0 px-15 py-10">
+          <small class="text-gray-600">Finished {{ book.last_update }}</small>
+        </div>
+      </div>
     </div>
   </section>
 </template>

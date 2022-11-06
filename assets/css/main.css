@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+html {
+  @apply font-sans text-gray-900 bg-neutral-50
+}
+
+section {
+  @apply mt-30
+}
+
+h3 {
+  @apply text-2xl py-20 mb-10 border-b border-gray-300
+}

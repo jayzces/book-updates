@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="max-w-7xl w-full">
     <template v-if="loaded">
       <FinishedBooks />
       <UnfinishedBooks />
@@ -30,9 +30,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-section:not(:first-child) {
-  @apply mt-20;
-}
-</style>

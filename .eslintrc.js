@@ -17,7 +17,6 @@ module.exports = {
   plugins: [],
   // add your custom rules here
   rules: {
-    'tailwindcss/classnames-order': 'warn',
     'tailwindcss/enforces-negative-arbitrary-values': 'warn',
     'tailwindcss/enforces-shorthand': 'warn',
     'tailwindcss/migration-from-tailwind-2': 'warn',

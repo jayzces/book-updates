@@ -14,6 +14,7 @@
     "data": "json-server data/db.json --port 3001"
   },
   "dependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "core-js": "^3.25.3",
     "nuxt": "^2.15.8",
     "vue": "^2.7.10",

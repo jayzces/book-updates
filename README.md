@@ -2,7 +2,6 @@ Book Updates
 ============
 Coding Test for a client
 
-
 ## Build Setup
 
 ```bash
@@ -11,6 +10,9 @@ $ yarn install
 
 # serve with hot reload at localhost:3000
 $ yarn dev
+
+# run data server at localhost:3001
+$ yarn data
 
 # build for production and launch server
 $ yarn build

@@ -1,24 +1,18 @@
+const colors = require('tailwindcss/colors')
+
 module.exports = {
   theme: {
-    extend: {
-      gridColumn: {
-        'span-13': 'span 13 / span 13',
-        'span-14': 'span 14 / span 14',
-        'span-15': 'span 15 / span 15',
-        'span-16': 'span 16 / span 16',
-        'span-17': 'span 17 / span 17',
-        'span-18': 'span 18 / span 18',
-        'span-19': 'span 19 / span 19',
-        'span-20': 'span 20 / span 20',
-      },
-    },
     colors: {
       white: '#FFFFFF',
-      black: '#000000',
+      current: 'currentColor',
       transparent: 'transparent',
+      gray: colors.gray,
+      neutral: colors.neutral,
+      blue: colors.blue
     },
     fontFamily: {
       sans: [
+        'Poppins',
         'Open Sans',
         'Helvetica Neue',
         'sans-serif',
@@ -42,10 +36,12 @@ module.exports = {
       100: '100px',
     },
     gridTemplateColumns: {
-      2: 'repeat(2, minmax(0, 1fr))',
-      3: 'repeat(3, minmax(0, 1fr))',
-      4: 'repeat(4, minmax(0, 1fr))',
-      20: 'repeat(20, minmax(0, 1fr))',
+      5: 'repeat(5, minmax(0, 1fr))',
+      6: 'repeat(6, minmax(0, 1fr))'
+      // 2: 'repeat(2, minmax(0, 1fr))',
+      // 3: 'repeat(3, minmax(0, 1fr))',
+      // 4: 'repeat(4, minmax(0, 1fr))',
+      // 20: 'repeat(20, minmax(0, 1fr))',
     },
     screens: {
       '3xl': { max: '1919px' },
@@ -59,7 +55,9 @@ module.exports = {
     },
   },
   variants: {},
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/aspect-ratio')
+  ],
   content: [
     `components/**/*.{vue,js}`,
     `layouts/**/*.vue`,
