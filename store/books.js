@@ -1,15 +1,19 @@
 export const state = () => {
   return {
     books: [],
-    updates: []
+    updates: [],
+    loaded: false,
   }
 }
 
 export const mutations = {
-  saveBooks(state, list) {
+  setBooks(state, list) {
     state.books = list
   },
-  saveUpdates(state, list) {
+  setLoaded(state, value) {
+    state.loaded = value
+  },
+  setUpdates(state, list) {
     state.updates = list
   }
 }
@@ -40,8 +44,9 @@ export const actions = {
     appendedUpdates
       .sort((b1, b2) => new Date(b2.last_update) - new Date(b1.last_update))
 
-    commit('saveBooks', appendedUpdates)
-    commit('saveUpdates', readingUpdates)
+    commit('setBooks', appendedUpdates)
+    commit('setUpdates', readingUpdates)
+    commit('setLoaded', true)
   },
   getFinishedBooks({ state }, limit = 6) {
     const books = state.books.filter(b => b.finished)
