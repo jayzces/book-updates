@@ -1,6 +1,8 @@
 <template>
   <section>
-    <h3>Un-finished books and how much is left of them (or % progress)</h3>
+    <h3 class="section__header">
+      Un-finished books and how much is left of them (or % progress)
+    </h3>
 
     <div class="grid grid-cols-6 gap-15">
       <div
@@ -15,10 +17,10 @@
           {{ book.title }}
         </div>
 
-        <div class="absolute bottom-0 inset-x-0 px-15 py-10">
-          <small class="text-gray-600"
-            >{{ book.progress | percent }} Read</small
-          >
+        <div
+          class="absolute bottom-0 inset-x-0 px-15 py-10 text-gray-600 text-xs"
+        >
+          {{ book.progress | percent }} Read
         </div>
         <div class="absolute h-5 bottom-0 inset-x-0 bg-gray-300">
           <div

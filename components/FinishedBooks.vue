@@ -1,6 +1,8 @@
 <template>
   <section>
-    <h3>Finished books and when they were finished (date of last update)</h3>
+    <h3 class="section__header">
+      Finished books and when they were finished (date of last update)
+    </h3>
 
     <div class="grid grid-cols-6 gap-15">
       <div
@@ -15,8 +17,10 @@
           {{ book.title }}
         </div>
 
-        <div class="absolute bottom-0 inset-x-0 px-15 py-10">
-          <small class="text-gray-600">Finished {{ book.last_update }}</small>
+        <div
+          class="absolute bottom-0 inset-x-0 px-15 py-10 text-gray-600 text-xs"
+        >
+          Finished {{ book.last_update }}
         </div>
       </div>
     </div>

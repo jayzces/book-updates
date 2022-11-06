@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3>Books with activity in the last 10 days</h3>
+    <h3 class="section__header">Books with activity in the last 10 days</h3>
 
     <div class="grid grid-cols-6 gap-15">
       <div

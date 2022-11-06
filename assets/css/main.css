@@ -8,6 +8,10 @@ section {
   @apply mt-30
 }
 
+.section__header {
+  @apply py-20 mb-10 border-b border-gray-300
+}
+
 h3 {
-  @apply text-2xl py-20 mb-10 border-b border-gray-300
+  @apply text-2xl
 }

@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3>Book list sorted by latest activity</h3>
+    <h3 class="section__header">Book list sorted by latest activity</h3>
 
     <div class="grid grid-cols-6 gap-15">
       <div
