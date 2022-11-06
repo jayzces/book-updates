@@ -2,6 +2,9 @@ Book Updates
 ============
 Coding Test for a client
 
+## Dependencies
+- Node v16
+
 ## Build Setup
 
 ```bash

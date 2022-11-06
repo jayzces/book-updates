@@ -1,11 +1,7 @@
-export default function ({ env, store }, inject) {
+export default function ({ env }, inject) {
   const baseUrl = env.apiBase
 
   const api = {
-    async getBook(id) {
-      const url = `${baseUrl}/books/${id}`
-      return await fetch(url).then(response => response.json())
-    },
     async getBooks(config = {}) {
       const url = `${baseUrl}/books${buildQueryParams(config)}`
       return await fetch(url).then(response => response.json())
